@@ -7,9 +7,8 @@ on:
 jobs:
     publish:
         name: Build & Push Dockerfile
-        needs: build
         uses: ztimson/actions/.github/workflows/docker.yaml@develop
         with:
-            name: ztimson/zakscode
+            name: ztimson/caddy-labels
             repository: ${{github.server_url}}/${{github.repository}}.git
             pass: ${{secrets.DEPLOY_TOKEN}}
