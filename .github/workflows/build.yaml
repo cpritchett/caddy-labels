@@ -1,0 +1,15 @@
+name: Build Container
+run-name: Build Container
+
+on:
+    push:
+
+jobs:
+    publish:
+        name: Build & Push Dockerfile
+        needs: build
+        uses: ztimson/actions/.github/workflows/docker.yaml@develop
+        with:
+            name: ztimson/zakscode
+            repository: ${{github.server_url}}/${{github.repository}}.git
+            pass: ${{secrets.DEPLOY_TOKEN}}
