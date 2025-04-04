@@ -40,7 +40,7 @@ jobs:
           REGISTRY="docker.io"
           VERSION="$(cat Dockerfile | grep "ARG CADDY_VERSION" | grep -Eo '=.+' | grep -Eo '[[:alnum:]\.\/\-]+')"
           
-          docker login -u ztimson ${{secrets.DOCKER_TOKEN}} $REGISTRY
+          docker login -u ztimson -p ${{secrets.DOCKER_TOKEN}} $REGISTRY
           
           docker build -t $REGISTRY/${{github.repository}}:${{github.ref_name}} .
           docker push $REGISTRY/${{github.repository}}:${{github.ref_name}}
