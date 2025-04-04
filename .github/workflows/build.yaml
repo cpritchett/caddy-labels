@@ -13,20 +13,20 @@ jobs:
             - name: Build Container
               run: |
                 git clone -b "${{github.ref_name}}" "$(echo ${{github.server_url}}/${{github.repository}}.git | sed s%://%://${{github.token}}@% )" .
-                REGISTRY=$(echo ${{github.server_url}} | sed s%http://%% | sed s%https://%% )
-                VERSION=$(cat Dockerfile | grep "ARG CADDY_VERSION" | grep -Eo '=.+' | grep -Eo '[[:alnum:]\.\/\-]+')
+                REGISTRY="$(echo ${{github.server_url}} | sed s%http://%% | sed s%https://%% )"
+                VERSION="$(cat Dockerfile | grep "ARG CADDY_VERSION" | grep -Eo '=.+' | grep -Eo '[[:alnum:]\.\/\-]+')"
                 
-                docker login -u ${{repository_owner}} -p ${{secrets.DEPLOY_TOKEN}} $REGISTRY
-                  
                 docker build -t $REGISTRY/${{github.repository}}:${{ github.ref_name}} .
+                docker login -u ${{github.repository_owner}} -p ${{secrets.DEPLOY_TOKEN}} $REGISTRY
                 docker push $REGISTRY/${{github.repository}}:${{ github.ref_name}}
                 
-                docker tag $REGISTRY/${{github.repository}}:$VERSION $REGISTRY/${{github.repository}}:${{github.ref_name}}
-                docker push $REGISTRY/${{github.repository}}:$VERSION
-                
-                [ '${{github.ref_name}}' == 'master' ] && \
+                if [ '${{github.ref_name}}' == 'master' ]; then
+                  docker tag $REGISTRY/${{github.repository}}:$VERSION $REGISTRY/${{github.repository}}:${{github.ref_name}}
+                  docker push $REGISTRY/${{github.repository}}:$VERSION
+
                   docker tag $REGISTRY/${{github.repository}}:latest $REGISTRY/${{github.repository}}:${{github.ref_name}} && \
-                  docker push $REGISTRY/${{github.repository}}:latest || echo ''
+                  docker push $REGISTRY/${{github.repository}}:latest
+                fi
 
     tag:
         name: Git Tag
@@ -36,7 +36,7 @@ jobs:
             - name: Git Tag
               run: |
                 git clone -b "${{github.ref_name}}" "$(echo ${{github.server_url}}/${{github.repository}}.git | sed s%://%://${{github.token}}@% )" .
-                VERSION=$(cat Dockerfile | grep "ARG CADDY_VERSION" | grep -Eo '=.+' | grep -Eo '[[:alnum:]\.\/\-]+')
+                VERSION="$(cat Dockerfile | grep "ARG CADDY_VERSION" | grep -Eo '=.+' | grep -Eo '[[:alnum:]\.\/\-]+')"
                   
                 git tag -f $VERSION ${{github.sha}}
                 git push -f origin $VERSION
