@@ -5,31 +5,36 @@ on:
     push:
 
 jobs:
-    docker:
-        name: Build Docker Container
+    container:
+        name: Build Container
         runs-on: ubuntu-latest
         container: docker
         steps:
-            - run: |
+            - name: Build Container
+              run: |
                 git clone -b "${{github.ref_name}}" "$(echo ${{github.server_url}}/${{github.repository}}.git | sed s%://%://${{github.token}}@% )" .
                 VERSION=$(cat Dockerfile | grep "ARG CADDY_VERSION" | grep -Eo '=.+' | grep -Eo '[[:alnum:]\.\/\-]+')
-                docker build -t ${{ github.server_url }}/${{ github.repository }}:$VERSION .
-                docker push ${{ github.server_url }}/${{ github.repository }}:$VERSION
+                PREFIX=$(echo ${{github.server_url}} | sed s%http://%% | sed s%https://%% )
+                  
+                docker build -t $PREFIX/${{ github.repository }}:${{ github.ref_name }} .
+                docker push $PREFIX/${{ github.repository }}:${{ github.ref_name }}
                 
-                docker tag ${{ github.server_url }}/${{ github.repository }}:${{ github.ref_name }} ${{ github.server_url }}/${{ github.repository }}:$VERSION
-                docker push ${{ github.server_url }}/${{ github.repository }}:${{ github.ref_name }}
+                docker tag $PREFIX/${{ github.repository }}:$VERSION $PREFIX/${{ github.repository }}:${{ github.ref_name }}
+                docker push $PREFIX/${{ github.repository }}:$VERSION
                 
                 [ '${{ github.ref_name }}' == 'master' ] && \
-                  docker tag ${{ github.server_url }}/${{ github.repository }}:latest ${{ github.server_url }}/${{ github.repository }}:$VERSION && \
-                  docker push ${{ github.server_url }}/${{ github.repository }}:latest || echo ''
+                  docker tag $PREFIX/${{ github.repository }}:latest $PREFIX/${{ github.repository }}:${{ github.ref_name }} && \
+                  docker push $PREFIX/${{ github.repository }}:latest || echo ''
 
     tag:
-        name: Tag Version
+        name: Git Tag
         runs-on: ubuntu-latest
-        container: node
+        container: alpine/git
         steps:
-            - run: |
+            - name: Git Tag
+              run: |
                 git clone -b "${{github.ref_name}}" "$(echo ${{github.server_url}}/${{github.repository}}.git | sed s%://%://${{github.token}}@% )" .
                 VERSION=$(cat Dockerfile | grep "ARG CADDY_VERSION" | grep -Eo '=.+' | grep -Eo '[[:alnum:]\.\/\-]+')
+                  
                 tag -f $VERSION ${{github.sha}}
                 git push -f origin $VERSION
