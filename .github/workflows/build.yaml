@@ -5,51 +5,29 @@ on:
     push:
 
 jobs:
-    version:
-        name: Get Version Number
+    docker:
+        name: Build Docker Container
         runs-on: ubuntu-latest
-        container: node
-        outputs:
-            VERSION: ${{ steps.extract-version.outputs.VERSION }}
+        container: docker
         steps:
             - name: Checkout
               uses: actions/checkout@v3
 
-            - name: Extract Version
-              id: extract-version
+            - name: Build Docker Container
               run: |
-                  VERSION=$(cat Dockerfile | grep "ARG CADDY_VERSION" | grep -Eo '=.+' | grep -Eo '[[:alnum:]\.\/\-]+')
-                  echo "VERSION=$VERSION" >> $GITHUB_ENV
-                  echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
-                  echo $VERSION
-
-    publish:
-        name: Build & Push Dockerfile
-        needs: version
-        runs-on: ubuntu-latest
-        container: node
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v3
-
-            - name: Push Version
-              uses: ztimson/actions/.github/workflows/docker.yaml@develop
-              with:
-                  name: ztimson/caddy-labels:${{ needs.version.outputs.VERSION }}
-                  repository: ${{ github.server_url }}/${{ github.repository }}.git
-                  pass: ${{ secrets.DEPLOY_TOKEN }}
-
-            - name: Push Latest
-              if: github.ref == 'refs/heads/master'
-              uses: ztimson/actions/.github/workflows/docker.yaml@develop
-              with:
-                  name: ztimson/caddy-labels:latest
-                  repository: ${{ github.server_url }}/${{ github.repository }}.git
-                  pass: ${{ secrets.DEPLOY_TOKEN }}
+                VERSION=$(cat Dockerfile | grep "ARG CADDY_VERSION" | grep -Eo '=.+' | grep -Eo '[[:alnum:]\.\/\-]+')
+                docker build -t ${{ github.server_url }}/${{ github.repository }}:$VERSION .
+                docker push ${{ github.server_url }}/${{ github.repository }}:$VERSION
+                
+                docker tag ${{ github.server_url }}/${{ github.repository }}:${{ github.ref_name }} ${{ github.server_url }}/${{ github.repository }}:$VERSION
+                docker push ${{ github.server_url }}/${{ github.repository }}:${{ github.ref_name }}
+                
+                [ '${{ github.ref_name }}' == 'master' ] && \
+                  docker tag ${{ github.server_url }}/${{ github.repository }}:latest ${{ github.server_url }}/${{ github.repository }}:$VERSION && \
+                  docker push ${{ github.server_url }}/${{ github.repository }}:latest || echo ''
 
     tag:
         name: Tag Version
-        needs: [version, publish]
         runs-on: ubuntu-latest
         container: node
         steps:
@@ -57,6 +35,7 @@ jobs:
               uses: ztimson/actions/clone@develop
 
             - name: Tag Version
-              uses: ztimson/actions/tag@develop
-              with:
-                  tag: ${{ needs.version.outputs.VERSION }}
+              run: |
+                VERSION=$(cat Dockerfile | grep "ARG CADDY_VERSION" | grep -Eo '=.+' | grep -Eo '[[:alnum:]\.\/\-]+')
+                tag -f $VERSION ${{github.sha}}
+                git push -f origin $VERSION
