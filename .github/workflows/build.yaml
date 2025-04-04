@@ -15,6 +15,7 @@ jobs:
 
             - name: Build Docker Container
               run: |
+                clone -b "${{github.ref_name}}" "URL=$(echo ${{github.server_url}}/${{github.repository}}.git | sed s%://%://${{github.token}}@% )" .
                 VERSION=$(cat Dockerfile | grep "ARG CADDY_VERSION" | grep -Eo '=.+' | grep -Eo '[[:alnum:]\.\/\-]+')
                 docker build -t ${{ github.server_url }}/${{ github.repository }}:$VERSION .
                 docker push ${{ github.server_url }}/${{ github.repository }}:$VERSION
@@ -36,6 +37,7 @@ jobs:
 
             - name: Tag Version
               run: |
+                clone -b "${{github.ref_name}}" "URL=$(echo ${{github.server_url}}/${{github.repository}}.git | sed s%://%://${{github.token}}@% )" .
                 VERSION=$(cat Dockerfile | grep "ARG CADDY_VERSION" | grep -Eo '=.+' | grep -Eo '[[:alnum:]\.\/\-]+')
                 tag -f $VERSION ${{github.sha}}
                 git push -f origin $VERSION
