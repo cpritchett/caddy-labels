@@ -16,15 +16,16 @@ jobs:
                 REGISTRY="$(echo ${{github.server_url}} | sed s%http://%% | sed s%https://%% )"
                 VERSION="$(cat Dockerfile | grep "ARG CADDY_VERSION" | grep -Eo '=.+' | grep -Eo '[[:alnum:]\.\/\-]+')"
                 
-                docker build -t $REGISTRY/${{github.repository}}:${{ github.ref_name}} .
                 docker login -u ${{github.repository_owner}} -p ${{secrets.DEPLOY_TOKEN}} $REGISTRY
-                docker push $REGISTRY/${{github.repository}}:${{ github.ref_name}}
+                
+                docker build -t $REGISTRY/${{github.repository}}:${{github.ref_name}} .
+                docker push $REGISTRY/${{github.repository}}:${{github.ref_name}}
                 
                 if [ '${{github.ref_name}}' == 'master' ]; then
-                  docker tag $REGISTRY/${{github.repository}}:$VERSION $REGISTRY/${{github.repository}}:${{github.ref_name}}
+                  docker tag $REGISTRY/${{github.repository}}:${{github.ref_name}} $REGISTRY/${{github.repository}}:$VERSION
                   docker push $REGISTRY/${{github.repository}}:$VERSION
 
-                  docker tag $REGISTRY/${{github.repository}}:latest $REGISTRY/${{github.repository}}:${{github.ref_name}} && \
+                  docker tag $REGISTRY/${{github.repository}}:${{github.ref_name}} $REGISTRY/${{github.repository}}:latest
                   docker push $REGISTRY/${{github.repository}}:latest
                 fi
 
