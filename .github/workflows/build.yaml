@@ -5,43 +5,56 @@ on:
     push:
 
 jobs:
+    version:
+        name: Get Version Number
+        runs-on: ubuntu-latest
+        container: node
+        outputs:
+            VERSION: ${{ steps.extract-version.outputs.VERSION }}
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+
+            - name: Extract Version
+              id: extract-version
+              run: |
+                  VERSION=$(cat Dockerfile | grep "ARG CADDY_VERSION" | grep -Eo '=.+' | grep -Eo '[[:alnum:]\.\/\-]+')
+                  echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 
     publish:
         name: Build & Push Dockerfile
+        needs: version
         runs-on: ubuntu-latest
         container: node
         steps:
-            - name: Get Version Number
-              run: echo "VERSION=$(cat Dockerfile | grep "ARG CADDY_VERSION" | grep -Eo '=.+' | grep -Eo '[[:alnum:]\.\/\-]+')" >> $GITHUB_ENV
+            - name: Checkout
+              uses: actions/checkout@v3
 
             - name: Push Version
               uses: ztimson/actions/.github/workflows/docker.yaml@develop
               with:
-                  name: ztimson/caddy-labels:${{env.VERSION}}
-                  repository: ${{github.server_url}}/${{github.repository}}.git
-                  pass: ${{secrets.DEPLOY_TOKEN}}
+                  name: ztimson/caddy-labels:${{ needs.version.outputs.VERSION }}
+                  repository: ${{ github.server_url }}/${{ github.repository }}.git
+                  pass: ${{ secrets.DEPLOY_TOKEN }}
 
             - name: Push Latest
               if: github.ref == 'refs/heads/master'
               uses: ztimson/actions/.github/workflows/docker.yaml@develop
               with:
-                name: ztimson/caddy-labels:latest
-                repository: ${{github.server_url}}/${{github.repository}}.git
-                pass: ${{secrets.DEPLOY_TOKEN}}
+                  name: ztimson/caddy-labels:latest
+                  repository: ${{ github.server_url }}/${{ github.repository }}.git
+                  pass: ${{ secrets.DEPLOY_TOKEN }}
 
     tag:
         name: Tag Version
-        needs: publish
+        needs: [version, publish]
         runs-on: ubuntu-latest
         container: node
         steps:
             - name: Clone Repository
               uses: ztimson/actions/clone@develop
 
-            - name: Get Version Number
-              run: echo "VERSION=$(cat Dockerfile | grep "ARG CADDY_VERSION" | grep -Eo '=.+' | grep -Eo '[[:alnum:]\.\/\-]+')" >> $GITHUB_ENV
-
             - name: Tag Version
               uses: ztimson/actions/tag@develop
               with:
-                  tag: ${{env.VERSION}}
+                  tag: ${{ needs.version.outputs.VERSION }}
