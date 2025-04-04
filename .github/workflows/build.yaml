@@ -19,7 +19,9 @@ jobs:
               id: extract-version
               run: |
                   VERSION=$(cat Dockerfile | grep "ARG CADDY_VERSION" | grep -Eo '=.+' | grep -Eo '[[:alnum:]\.\/\-]+')
+                  echo "VERSION=$VERSION" >> $GITHUB_ENV
                   echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+                  echo $VERSION
 
     publish:
         name: Build & Push Dockerfile
