@@ -5,29 +5,53 @@ on:
     push:
 
 jobs:
-    container:
-        name: Build Container
-        runs-on: ubuntu-latest
-        container: docker
-        steps:
-            - name: Build Container
-              run: |
-                git clone -b "${{github.ref_name}}" "$(echo ${{github.server_url}}/${{github.repository}}.git | sed s%://%://${{github.token}}@% )" .
-                REGISTRY="$(echo ${{github.server_url}} | sed s%http://%% | sed s%https://%% )"
-                VERSION="$(cat Dockerfile | grep "ARG CADDY_VERSION" | grep -Eo '=.+' | grep -Eo '[[:alnum:]\.\/\-]+')"
-                
-                docker login -u ${{github.repository_owner}} -p ${{secrets.DEPLOY_TOKEN}} $REGISTRY
-                
-                docker build -t $REGISTRY/${{github.repository}}:${{github.ref_name}} .
-                docker push $REGISTRY/${{github.repository}}:${{github.ref_name}}
-                
-                if [ '${{github.ref_name}}' == 'master' ]; then
-                  docker tag $REGISTRY/${{github.repository}}:${{github.ref_name}} $REGISTRY/${{github.repository}}:$VERSION
-                  docker push $REGISTRY/${{github.repository}}:$VERSION
+  container:
+    name: Build Container
+    runs-on: ubuntu-latest
+    container: docker
+    steps:
+      - name: Build Container
+        run: |
+          git clone -b "${{github.ref_name}}" "$(echo ${{github.server_url}}/${{github.repository}}.git | sed s%://%://${{github.token}}@% )" .
+          REGISTRY="$(echo ${{github.server_url}} | sed s%http://%% | sed s%https://%% )"
+          VERSION="$(cat Dockerfile | grep "ARG CADDY_VERSION" | grep -Eo '=.+' | grep -Eo '[[:alnum:]\.\/\-]+')"
+          
+          docker login -u ${{github.repository_owner}} -p ${{secrets.DEPLOY_TOKEN}} $REGISTRY
+          
+          docker build -t $REGISTRY/${{github.repository}}:${{github.ref_name}} .
+          docker push $REGISTRY/${{github.repository}}:${{github.ref_name}}
+          
+          if [ '${{github.ref_name}}' == 'master' ]; then
+            docker tag $REGISTRY/${{github.repository}}:${{github.ref_name}} $REGISTRY/${{github.repository}}:$VERSION
+            docker push $REGISTRY/${{github.repository}}:$VERSION
+          
+            docker tag $REGISTRY/${{github.repository}}:${{github.ref_name}} $REGISTRY/${{github.repository}}:latest
+            docker push $REGISTRY/${{github.repository}}:latest
+          fi
 
-                  docker tag $REGISTRY/${{github.repository}}:${{github.ref_name}} $REGISTRY/${{github.repository}}:latest
-                  docker push $REGISTRY/${{github.repository}}:latest
-                fi
+  docker-hub:
+    name: Docker Hub
+    runs-on: ubuntu-latest
+    container: docker
+    steps:
+      - name: Build Container
+        run: |
+          git clone -b "${{github.ref_name}}" "$(echo ${{github.server_url}}/${{github.repository}}.git | sed s%://%://${{github.token}}@% )" .
+          REGISTRY="docker.io"
+          VERSION="$(cat Dockerfile | grep "ARG CADDY_VERSION" | grep -Eo '=.+' | grep -Eo '[[:alnum:]\.\/\-]+')"
+          
+          docker login -u ztimson ${{secrets.DOCKER_TOKEN}} $REGISTRY
+          
+          docker build -t $REGISTRY/${{github.repository}}:${{github.ref_name}} .
+          docker push $REGISTRY/${{github.repository}}:${{github.ref_name}}
+          
+          if [ '${{github.ref_name}}' == 'master' ]; then
+            docker tag $REGISTRY/${{github.repository}}:${{github.ref_name}} $REGISTRY/${{github.repository}}:$VERSION
+            docker push $REGISTRY/${{github.repository}}:$VERSION
+          
+            docker tag $REGISTRY/${{github.repository}}:${{github.ref_name}} $REGISTRY/${{github.repository}}:latest
+            docker push $REGISTRY/${{github.repository}}:latest
+          fi
 
     tag:
         name: Git Tag
