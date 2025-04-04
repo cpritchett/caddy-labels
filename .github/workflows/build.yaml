@@ -2,7 +2,7 @@ name: Build Container
 run-name: Build Container
 
 on:
-    push:
+  push:
 
 jobs:
   container:
@@ -53,15 +53,15 @@ jobs:
             docker push $REGISTRY/${{github.repository}}:latest
           fi
 
-    tag:
-        name: Git Tag
-        runs-on: ubuntu-latest
-        container: alpine/git
-        steps:
-            - name: Git Tag
-              run: |
-                git clone -b "${{github.ref_name}}" "$(echo ${{github.server_url}}/${{github.repository}}.git | sed s%://%://${{github.token}}@% )" .
-                VERSION="$(cat Dockerfile | grep "ARG CADDY_VERSION" | grep -Eo '=.+' | grep -Eo '[[:alnum:]\.\/\-]+')"
-                  
-                git tag -f $VERSION ${{github.sha}}
-                git push -f origin $VERSION
+  tag:
+    name: Git Tag
+    runs-on: ubuntu-latest
+    container: alpine/git
+    steps:
+        - name: Git Tag
+          run: |
+            git clone -b "${{github.ref_name}}" "$(echo ${{github.server_url}}/${{github.repository}}.git | sed s%://%://${{github.token}}@% )" .
+            VERSION="$(cat Dockerfile | grep "ARG CADDY_VERSION" | grep -Eo '=.+' | grep -Eo '[[:alnum:]\.\/\-]+')"
+              
+            git tag -f $VERSION ${{github.sha}}
+            git push -f origin $VERSION
