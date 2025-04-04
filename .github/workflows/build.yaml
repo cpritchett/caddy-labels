@@ -10,11 +10,7 @@ jobs:
         runs-on: ubuntu-latest
         container: docker
         steps:
-            - name: Checkout
-              uses: actions/checkout@v3
-
-            - name: Build Docker Container
-              run: |
+            - run: |
                 clone -b "${{github.ref_name}}" "URL=$(echo ${{github.server_url}}/${{github.repository}}.git | sed s%://%://${{github.token}}@% )" .
                 VERSION=$(cat Dockerfile | grep "ARG CADDY_VERSION" | grep -Eo '=.+' | grep -Eo '[[:alnum:]\.\/\-]+')
                 docker build -t ${{ github.server_url }}/${{ github.repository }}:$VERSION .
@@ -32,11 +28,7 @@ jobs:
         runs-on: ubuntu-latest
         container: node
         steps:
-            - name: Clone Repository
-              uses: ztimson/actions/clone@develop
-
-            - name: Tag Version
-              run: |
+            - run: |
                 clone -b "${{github.ref_name}}" "URL=$(echo ${{github.server_url}}/${{github.repository}}.git | sed s%://%://${{github.token}}@% )" .
                 VERSION=$(cat Dockerfile | grep "ARG CADDY_VERSION" | grep -Eo '=.+' | grep -Eo '[[:alnum:]\.\/\-]+')
                 tag -f $VERSION ${{github.sha}}
