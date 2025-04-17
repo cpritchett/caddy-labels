@@ -15,7 +15,7 @@ jobs:
           git clone -b "${{github.ref_name}}" "$(echo ${{github.server_url}}/${{github.repository}}.git | sed s%://%://${{github.token}}@% )" .
           DOCKER_HUB=$([ -n "${{secrets.DOCKER_HUB_USER}}" ] && [ -n "${{secrets.DOCKER_HUB_TOKEN}}" ] && [ -n "${{secrets.DOCKER_HUB_IMAGE}}" ] && echo "true" || echo "false")
           REGISTRY="$(echo "${{github.server_url}}" | sed -E 's|https?://||')"
-          VERSION="$(cat package.json | grep 'version' | grep -Eo '([0-9]+\.?)+(-[0-9a-zA-Z\-\.]+)?')"
+          VERSION="$(cat Dockerfile | grep "ARG CADDY_VERSION" | grep -Eo '=.+' | grep -Eo '[0-9a-zA-Z\.\/\-]+')"
   
           docker login -u "${{github.repository_owner}}" -p "${{secrets.DEPLOY_TOKEN}}" "$REGISTRY"
           if [ "$DOCKER_HUB" = "true" ]; then docker login -u "${{secrets.DOCKER_HUB_USER}}" -p "${{secrets.DOCKER_HUB_TOKEN}}" docker.io; fi
@@ -51,7 +51,7 @@ jobs:
       - name: Git Tag
         run: |
           git clone -b "${{github.ref_name}}" "$(echo ${{github.server_url}}/${{github.repository}}.git | sed s%://%://${{github.token}}@% )" .
-          VERSION="$(cat package.json | grep 'version' | grep -Eo '([0-9]+\.?)+(-[0-9a-zA-Z\-\.]+)?')"
+          VERSION="$(cat Dockerfile | grep "ARG CADDY_VERSION" | grep -Eo '=.+' | grep -Eo '[0-9a-zA-Z\.\/\-]+')"
           
           git tag -f $VERSION ${{github.sha}}
           git push -f origin $VERSION
