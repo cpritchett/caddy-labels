@@ -1,0 +1,20 @@
+{
+  // Markdownlint configuration using JSONC (JSON with Comments)
+  // This allows HTML elements commonly used in GitHub README files
+  
+  "MD033": false, // Allow inline HTML (for GitHub badges, styling)
+  "MD013": {
+    "line_length": 100, // Allow longer lines for URLs and badges
+    "heading_line_length": 100,
+    "code_block_line_length": 100,
+    "tables": false // Don't enforce line length in tables
+  },
+  "MD041": false, // Allow first line to not be H1 (for HTML headers)
+  "MD001": false, // Allow heading levels to skip (common in complex docs)
+  "MD024": {
+    "siblings_only": true // Allow duplicate headings if not siblings
+  },
+  "MD029": {
+    "style": "one_or_ordered" // Allow either style: 1,1,1 or 1,2,3
+  }
+}

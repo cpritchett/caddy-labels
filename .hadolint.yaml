@@ -1,0 +1,23 @@
+# Hadolint configuration for Dockerfile linting
+# See: https://github.com/hadolint/hadolint
+
+# Ignore specific rules
+ignored:
+  # DL3008: Pin versions in apt get install (we're using official base images)
+  - DL3008
+  # DL3059: Multiple consecutive RUN instructions (sometimes needed for clarity)
+  - DL3059
+
+# Trusted registries for base images
+trusted-registries:
+  - docker.io
+  - ghcr.io
+  - gcr.io
+  - quay.io
+
+# Custom rules
+override:
+  error: []
+  warning: []
+  info: []
+  style: []

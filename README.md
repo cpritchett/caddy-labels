@@ -1,40 +1,44 @@
+# ztimson/caddy-labels
+
 <!-- Header -->
 <div id="top" align="center">
   <br />
 
   <!-- Logo -->
-  <img src="https://git.zakscode.com/repo-avatars/e6c86b62a0a3a3183b131dc90ffbbffdf653002d36954748e29dee7a4866350e" alt="Logo" width="200" height="200">
-
-  <!-- Title -->
-### ztimson/caddy-labels
+  <img src="https://git.zakscode.com/repo-avatars/e6c86b62a0a3a3183b131dc90ffbbffdf653002d36954748e29dee7a4866350e"
+       alt="Logo" width="200" height="200">
 
   <!-- Description -->
-Caddy with Docker Label Support, Cloudflare & Route53
+  Caddy with Docker Label Support, Cloudflare & Route53
 
   <!-- Repo badges -->
-[![Version](https://img.shields.io/badge/dynamic/json.svg?label=Version&style=for-the-badge&url=https://git.zakscode.com/api/v1/repos/ztimson/caddy-labels/tags&query=$[0].name)](https://git.zakscode.com/ztimson/caddy-labels/tags)
-[![Pull Requests](https://img.shields.io/badge/dynamic/json.svg?label=Pull%20Requests&style=for-the-badge&url=https://git.zakscode.com/api/v1/repos/ztimson/caddy-labels&query=open_pr_counter)](https://git.zakscode.com/ztimson/caddy-labels/pulls)
-[![Issues](https://img.shields.io/badge/dynamic/json.svg?label=Issues&style=for-the-badge&url=https://git.zakscode.com/api/v1/repos/ztimson/caddy-labels&query=open_issues_count)](https://git.zakscode.com/ztimson/caddy-labels/issues)
+  [![Version](https://img.shields.io/badge/dynamic/json.svg?label=Version&style=for-the-badge&url=https://git.zakscode.com/api/v1/repos/ztimson/caddy-labels/tags&query=$[0].name)](https://git.zakscode.com/ztimson/caddy-labels/tags)
+  [![Pull Requests](https://img.shields.io/badge/dynamic/json.svg?label=Pull%20Requests&style=for-the-badge&url=https://git.zakscode.com/api/v1/repos/ztimson/caddy-labels&query=open_pr_counter)](https://git.zakscode.com/ztimson/caddy-labels/pulls)
+  [![Issues](https://img.shields.io/badge/dynamic/json.svg?label=Issues&style=for-the-badge&url=https://git.zakscode.com/api/v1/repos/ztimson/caddy-labels&query=open_issues_count)](https://git.zakscode.com/ztimson/caddy-labels/issues)
 
 </div>
 
 ## Table of Contents
+
 - [ztimson/caddy-labels](#top)
-    - [About](#about)
-        - [Built With](#built-with)
-    - [Setup](#setup)
-        - [Production](#production)
-        - [Development](#development)
-    - [License](#license)
+  - [About](#about)
+    - [Built With](#built-with)
+  - [Setup](#setup)
+    - [Production](#production)
+    - [Development](#development)
+  - [License](#license)
 
 ## About
 
 Caddy with docker label support, Cloudflare & Route53
- - [AWS Route53](https://github.com/caddy-dns/route53)
- - [Cloudflare](https://github.com/caddy-dns/cloudflare)
- - [caddy-docker-proxy](github.com/lucaslorentz/caddy-docker-proxy)
 
-This image will inspect container labels & translate them into a caddy config like so:
+- [AWS Route53](https://github.com/caddy-dns/route53)
+- [Cloudflare](https://github.com/caddy-dns/cloudflare)
+- [caddy-docker-proxy](github.com/lucaslorentz/caddy-docker-proxy)
+
+This image will inspect container labels & translate them into a caddy config
+like so:
+
 ```yml
 services:
   server:
@@ -43,13 +47,17 @@ services:
       - proxy_network
     deploy:
       labels:
-        - caddy: '*.example.com'                        # *.example.com {
-        - caddy.reverse_proxy: {{upstreams 80}}         #     revere_proxy <DOCKER IP>:80
-        - caddy.tls.dns: cloudflare                     #     tls { dns cloudflare } 
-                                                        # }
+        # *.example.com {
+        - caddy: '*.example.com'
+        # revere_proxy <DOCKER IP>:80
+        - caddy.reverse_proxy: {{upstreams 80}}
+        # tls { dns cloudflare }
+        - caddy.tls.dns: cloudflare
+        # }
 ```
 
 Other useful patterns:
+
 ```yml
 # Load-balance sockets
 caddy.reverse_proxy.lb_policy: client_ip_hash
@@ -68,22 +76,21 @@ caddy.handle.reverse_proxy: '{{upstreams 3000}}'
 See [caddy-docker-proxy](github.com/lucaslorentz/caddy-docker-proxy) for more information
 
 ### Built With
+
 [![Docker](https://img.shields.io/badge/Docker-384d54?style=for-the-badge&logo=docker)](https://docker.com/)
 
 ## Setup
 
-<details>
-<summary>
-  <h3 id="production" style="display: inline">
-    Production
-  </h3>
-</summary>
+### Production
 
 #### Prerequisites
+
 - [Docker](https://docs.docker.com/get-started/get-docker/)
 
 #### Instructions
+
 1. Create a compose file:
+
 ```yml
 services:
   caddy:
@@ -117,25 +124,61 @@ networks:
 volumes:
   data:
 ```
-2. Deploy: `docker compose up`
 
-</details>
+1. Deploy: `docker compose up`
 
-<details>
-<summary>
-  <h3 id="development" style="display: inline">
-    Development
-  </h3>
-</summary>
+### Development
 
-#### Prerequisites
+#### Development Prerequisites
+
 - [Docker](https://docs.docker.com/get-started/get-docker/)
+- [mise](https://mise.jdx.dev/) (recommended) or
+  [Node.js](https://nodejs.org/)
 
-#### Instructions
+#### Build Instructions
+
 1. Update desired version number in Dockerfile
-2. Build docker image: `docekr build -t ztimson/caddy-labels:latest .`
+1. Build docker image: `docker build -t ztimson/caddy-labels:latest .`
 
-</details>
+#### Linting
+
+This project includes comprehensive linting for code quality:
+
+**Setup with mise (recommended):**
+
+```bash
+mise run setup  # Install all tools and dependencies
+```
+
+**Setup without mise:**
+
+```bash
+npm install  # Install Node.js dependencies
+# Install hadolint manually for your platform
+```
+
+**Available commands:**
+
+```bash
+npm run lint          # Run all linters
+npm run lint:docker   # Lint Dockerfile with hadolint
+npm run lint:markdown # Lint Markdown files
+npm run lint:yaml     # Lint YAML files with ESLint
+npm run lint:fix      # Auto-fix Markdown issues
+```
+
+**Tools included:**
+
+- **Hadolint** - Dockerfile linting and security checks
+- **markdownlint** - Markdown formatting and style
+- **eslint-plugin-yml** - YAML syntax and style via ESLint
+- **commitlint** - Conventional commit message format
+- **Husky** - Git hooks for pre-commit linting
+
+**Git hooks:**
+
+- Pre-commit: Runs all linters before allowing commits
+- Commit-msg: Validates commit message format
 
 ## License
 

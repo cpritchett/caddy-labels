@@ -1,0 +1,51 @@
+{
+  "name": "caddy-labels",
+  "version": "1.0.0",
+  "description": "Caddy with Docker Label Support, Cloudflare & Route53",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "lint": "npm run lint:docker && npm run lint:markdown && npm run lint:yaml",
+    "lint:docker": "mise exec -- hadolint Dockerfile || hadolint Dockerfile",
+    "lint:markdown": "markdownlint --config .markdownlint.jsonc *.md",
+    "lint:yaml": "eslint --ext .yml,.yaml .github/workflows/",
+    "lint:fix": "markdownlint --config .markdownlint.jsonc --fix *.md",
+    "lint-staged": "lint-staged",
+    "prepare": "husky",
+    "setup": "mise run setup",
+    "install-tools": "mise run install-tools"
+  },
+  "lint-staged": {
+    "*.md": [
+      "markdownlint --config .markdownlint.jsonc --fix"
+    ],
+    ".github/workflows/*.{yml,yaml}": [
+      "eslint --fix"
+    ],
+    "Dockerfile": [
+      "mise exec -- hadolint || hadolint"
+    ]
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.3.0",
+    "@commitlint/config-conventional": "^19.2.2",
+    "eslint": "^9.0.0",
+    "eslint-plugin-yml": "^1.18.0",
+    "husky": "^9.0.11",
+    "lint-staged": "^16.1.0",
+    "markdownlint-cli": "^0.41.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git.zakscode.com/ztimson/caddy-labels.git"
+  },
+  "keywords": [
+    "caddy",
+    "docker",
+    "proxy",
+    "cloudflare",
+    "route53"
+  ],
+  "author": "ztimson",
+  "license": "MIT"
+}

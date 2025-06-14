@@ -1,0 +1,43 @@
+name: Lint
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+
+jobs:
+  lint:
+    name: Lint Code
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint Dockerfile
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: Dockerfile
+          config: .hadolint.yaml
+
+      - name: Lint Markdown
+        run: npm run lint:markdown
+
+      - name: Lint YAML
+        run: npm run lint:yaml
+
+      - name: Check commit messages (PR only)
+        if: github.event_name == 'pull_request'
+        run: |
+          git fetch origin main:main
+          npx commitlint --from main --to HEAD
