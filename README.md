@@ -9,7 +9,7 @@
        alt="Logo" width="200" height="200">
 
   <!-- Description -->
-  Caddy with Docker Label Support, Cloudflare & Route53
+  Caddy with Docker Label Support & Cloudflare
 
   <!-- Repo badges -->
   [![Version](https://img.shields.io/badge/dynamic/json.svg?label=Version&style=for-the-badge&url=https://git.zakscode.com/api/v1/repos/ztimson/caddy-labels/tags&query=$[0].name)](https://git.zakscode.com/ztimson/caddy-labels/tags)
@@ -30,9 +30,8 @@
 
 ## About
 
-Caddy with docker label support, Cloudflare & Route53
+Caddy with docker label support & Cloudflare
 
-- [AWS Route53](https://github.com/caddy-dns/route53)
 - [Cloudflare](https://github.com/caddy-dns/cloudflare)
 - [caddy-docker-proxy](github.com/lucaslorentz/caddy-docker-proxy)
 
@@ -112,11 +111,6 @@ services:
         caddy.email: example@example.com
         # Cloudflare
         caddy.acme_dns: 'cloudflare TOKEN'
-        # OR Route53
-        caddy.acme_dns: route53
-        caddy.acme_dns.region: 'us-east-1'
-        caddy.acme_dns.access_key_id: 'TOKEN'
-        caddy.acme_dns.secret_access_key: 'TOKEN'
 
 networks:
   proxy_network:

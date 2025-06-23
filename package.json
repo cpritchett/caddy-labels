@@ -1,7 +1,7 @@
 {
   "name": "caddy-labels",
   "version": "1.0.0",
-  "description": "Caddy with Docker Label Support, Cloudflare & Route53",
+  "description": "Caddy with Docker Label Support & Cloudflare",
   "type": "module",
   "private": true,
   "scripts": {
@@ -44,7 +44,7 @@
     "docker",
     "proxy",
     "cloudflare",
-    "route53"
+    "cloudflare"
   ],
   "author": "ztimson",
   "license": "MIT"
