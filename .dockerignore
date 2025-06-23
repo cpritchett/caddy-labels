@@ -1,0 +1,84 @@
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# GitHub
+.github/
+
+# Documentation
+README.md
+CONTRIBUTING.md
+LICENSE
+*.md
+docs/
+
+# Node.js development
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+yarn.lock
+.npm
+.yarn
+
+# Development dependencies & configs
+package.json5
+eslint.config.mjs
+commitlint.config.mjs
+.eslintrc*
+.markdownlint*
+.hadolint.yaml
+
+# Tool configurations
+.mise.toml
+.editorconfig
+.nvmrc
+
+# Git hooks
+.husky/
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+.temp/
+
+# Coverage and testing
+coverage/
+.nyc_output/
+.coverage/
+junit.xml
+
+# Environment files
+.env*
+!.env.example
+
+# Build artifacts
+dist/
+build/
+*.tar.gz
+
+# Backup files
+*.bak
+*.backup

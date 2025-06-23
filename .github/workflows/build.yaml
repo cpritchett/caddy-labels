@@ -1,57 +1,84 @@
-name: Build and publish
-run-name: Build and publish
+name: Build and publish to GHCR
+run-name: Build and publish to GHCR
 
 on:
   push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
+  test:
+    name: Test Build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image (test only)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          platforms: linux/amd64,linux/arm64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
   container:
-    name: Build Container
+    name: Build and Push Container
     runs-on: ubuntu-latest
-    container: docker
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    permissions:
+      contents: read
+      packages: write
     steps:
-      - name: Build Container
-        run: |
-          git clone -b "${{github.ref_name}}" "$(echo ${{github.server_url}}/${{github.repository}}.git | sed s%://%://${{github.token}}@% )" .
-          DOCKER_HUB=$([ -n "${{secrets.DOCKER_HUB_USER}}" ] && [ -n "${{secrets.DOCKER_HUB_TOKEN}}" ] && [ -n "${{secrets.DOCKER_HUB_IMAGE}}" ] && echo "true" || echo "false")
-          REGISTRY="$(echo "${{github.server_url}}" | sed -E 's|https?://||')"
-          VERSION="$(cat Dockerfile | grep "ARG CADDY_VERSION" | grep -Eo '=.+' | grep -Eo '[0-9a-zA-Z\.\/\-]+')"
-  
-          docker login -u "${{github.repository_owner}}" -p "${{secrets.DEPLOY_TOKEN}}" "$REGISTRY"
-          if [ "$DOCKER_HUB" = "true" ]; then docker login -u "${{secrets.DOCKER_HUB_USER}}" -p "${{secrets.DOCKER_HUB_TOKEN}}" docker.io; fi
-  
-          docker build -t "$REGISTRY/${{github.repository}}:${{github.ref_name}}" .
-          docker push "$REGISTRY/${{github.repository}}:${{github.ref_name}}"
-          if [ "$DOCKER_HUB" = "true" ]; then
-            docker tag "$REGISTRY/${{github.repository}}:${{github.ref_name}}" "docker.io/${{secrets.DOCKER_HUB_IMAGE}}:${{github.ref_name}}"
-            docker push "docker.io/${{secrets.DOCKER_HUB_IMAGE}}:${{github.ref_name}}"
-          fi
-  
-          if [ "${{github.ref_name}}" = "master" ]; then
-            docker tag "$REGISTRY/${{github.repository}}:${{github.ref_name}}" "$REGISTRY/${{github.repository}}:$VERSION"
-            docker push "$REGISTRY/${{github.repository}}:$VERSION"
-            if [ "$DOCKER_HUB" = "true" ]; then
-              docker tag "$REGISTRY/${{github.repository}}:${{github.ref_name}}" "docker.io/${{secrets.DOCKER_HUB_IMAGE}}:$VERSION"
-              docker push "docker.io/${{secrets.DOCKER_HUB_IMAGE}}:$VERSION"
-            fi
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-            docker tag "$REGISTRY/${{github.repository}}:${{github.ref_name}}" "$REGISTRY/${{github.repository}}:latest"
-            docker push "$REGISTRY/${{github.repository}}:latest"
-            if [ "$DOCKER_HUB" = "true" ]; then
-              docker tag "$REGISTRY/${{github.repository}}:${{github.ref_name}}" "docker.io/${{secrets.DOCKER_HUB_IMAGE}}:latest"
-              docker push "docker.io/${{secrets.DOCKER_HUB_IMAGE}}:latest"
-            fi
-          fi
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-  tag:
-    name: Git Tag
-    runs-on: ubuntu-latest
-    container: docker
-    steps:
-      - name: Git Tag
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value={{date 'YYYYMMDD-HHmmss' tz='UTC'}}
+
+      - name: Extract Caddy version
+        id: caddy-version
         run: |
-          git clone -b "${{github.ref_name}}" "$(echo ${{github.server_url}}/${{github.repository}}.git | sed s%://%://${{github.token}}@% )" .
-          VERSION="$(cat Dockerfile | grep "ARG CADDY_VERSION" | grep -Eo '=.+' | grep -Eo '[0-9a-zA-Z\.\/\-]+')"
-          
-          git tag -f $VERSION ${{github.sha}}
-          git push -f origin $VERSION
+          VERSION=$(grep "ARG CADDY_VERSION" Dockerfile | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+\(-[A-Za-z0-9.-]\+\)\?\(\+[A-Za-z0-9.-]\+\)\?')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ steps.meta.outputs.tags }}
+            ghcr.io/${{ github.repository }}:${{ steps.caddy-version.outputs.version }}
+          labels: ${{ steps.meta.outputs.labels }}
+          platforms: linux/amd64,linux/arm64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+
