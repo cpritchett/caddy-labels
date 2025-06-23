@@ -18,13 +18,11 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-package-lock.json
 yarn.lock
 .npm
 .yarn
 
 # Development dependencies & configs
-package.json
 package.json5
 eslint.config.mjs
 commitlint.config.mjs
