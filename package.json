@@ -23,7 +23,7 @@
       "eslint --fix"
     ],
     "Dockerfile": [
-      "mise exec -- hadolint || hadolint"
+      "hadolint"
     ]
   },
   "devDependencies": {
