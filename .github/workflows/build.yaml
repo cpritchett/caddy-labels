@@ -65,7 +65,7 @@ jobs:
       - name: Extract Caddy version
         id: caddy-version
         run: |
-          VERSION=$(grep "ARG CADDY_VERSION" Dockerfile | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+')
+          VERSION=$(grep "ARG CADDY_VERSION" Dockerfile | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+\(-[A-Za-z0-9.-]\+\)\?\(\+[A-Za-z0-9.-]\+\)\?')
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Build and push Docker image
