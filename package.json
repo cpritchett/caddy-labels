@@ -37,7 +37,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://git.zakscode.com/ztimson/caddy-labels.git"
+    "url": "https://github.com/cpritchett/caddy-labels.git"
   },
   "keywords": [
     "caddy",
@@ -46,6 +46,6 @@
     "cloudflare",
     "cloudflare"
   ],
-  "author": "ztimson",
+  "author": "cpritchett",
   "license": "MIT"
 }
