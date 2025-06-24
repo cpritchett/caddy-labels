@@ -1,4 +1,4 @@
-# ztimson/caddy-labels
+# cpritchett/caddy-labels
 
 <!-- Header -->
 <div id="top" align="center">
@@ -12,9 +12,9 @@
   Caddy with Docker Label Support & Cloudflare
 
   <!-- Repo badges -->
-  [![Version](https://img.shields.io/badge/dynamic/json.svg?label=Version&style=for-the-badge&url=https://git.zakscode.com/api/v1/repos/ztimson/caddy-labels/tags&query=$[0].name)](https://git.zakscode.com/ztimson/caddy-labels/tags)
-  [![Pull Requests](https://img.shields.io/badge/dynamic/json.svg?label=Pull%20Requests&style=for-the-badge&url=https://git.zakscode.com/api/v1/repos/ztimson/caddy-labels&query=open_pr_counter)](https://git.zakscode.com/ztimson/caddy-labels/pulls)
-  [![Issues](https://img.shields.io/badge/dynamic/json.svg?label=Issues&style=for-the-badge&url=https://git.zakscode.com/api/v1/repos/ztimson/caddy-labels&query=open_issues_count)](https://git.zakscode.com/ztimson/caddy-labels/issues)
+  [![Version](https://img.shields.io/github/v/tag/cpritchett/caddy-labels?style=for-the-badge&label=Version)](https://github.com/cpritchett/caddy-labels/tags)
+  [![Pull Requests](https://img.shields.io/github/issues-pr/cpritchett/caddy-labels?style=for-the-badge)](https://github.com/cpritchett/caddy-labels/pulls)
+  [![Issues](https://img.shields.io/github/issues/cpritchett/caddy-labels?style=for-the-badge)](https://github.com/cpritchett/caddy-labels/issues)
 
 </div>
 
@@ -93,7 +93,7 @@ See [caddy-docker-proxy](github.com/lucaslorentz/caddy-docker-proxy) for more in
 ```yml
 services:
   caddy:
-    image: ztimson/caddy-labels:latest
+    image: cpritchett/caddy-labels:latest
     environment:
       CADDY_INGRESS_NETWORKS: proxy_network
       TZ: America/Toronto
@@ -132,7 +132,7 @@ volumes:
 #### Build Instructions
 
 1. Update desired version number in Dockerfile
-1. Build docker image: `docker build -t ztimson/caddy-labels:latest .`
+1. Build docker image: `docker build -t cpritchett/caddy-labels:latest .`
 
 #### Linting
 
@@ -176,6 +176,6 @@ npm run lint:fix      # Auto-fix Markdown issues
 
 ## License
 
-Copyright © 2023 Zakary Timson | Available under MIT Licensing
+Copyright © 2023 cpritchett | Available under MIT Licensing
 
 See the [license](LICENSE) for more information.

@@ -12,6 +12,7 @@ CONTRIBUTING.md
 LICENSE
 *.md
 docs/
+CLAUDE.md
 
 # Node.js development
 node_modules/
@@ -23,7 +24,7 @@ yarn.lock
 .yarn
 
 # Development dependencies & configs
-package.json5
+package.json
 eslint.config.mjs
 commitlint.config.mjs
 .eslintrc*
