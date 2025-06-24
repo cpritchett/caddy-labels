@@ -8,7 +8,7 @@ node = "22.16.0"
 
 # Hadolint for Dockerfile linting
 hadolint = "2.12.0"
-cosign = "2.5.0"
+cosign = "2.5.2"
 shellcheck = "0.10.0"
 
 [tasks.install-tools]
