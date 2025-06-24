@@ -30,6 +30,7 @@ commitlint.config.mjs
 .eslintrc*
 .markdownlint*
 .hadolint.yaml
+renovate.json
 
 # Tool configurations
 .mise.toml
