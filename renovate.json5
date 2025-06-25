@@ -2,11 +2,12 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended", // Base configuration with sensible defaults
-    ":docker",            // Enable Dockerfile updates (base images, etc.)
-    ":githubActions"      // Enable GitHub Actions workflow updates
+    ":docker",            // Enable Dockerfile updates (base images, etc.) - This preset enables the Docker manager and certain behaviors.
+    "helpers:pinGitHubActionDigests" // Pin GitHub Actions to their commit SHAs for security and reproducibility.
   ],
   // Pin digests for Docker images to ensure builds are reproducible and secure.
   // For example, ubuntu:22.04 will become ubuntu:22.04@sha256:abcdef...
+  // This is a global setting. The :docker preset above also includes docker:pinDigests.
   "pinDigests": true,
   "packageRules": [
     // Group all @types/* packages (TypeScript type definitions) into a single PR.
@@ -32,6 +33,7 @@
   ]
   // Renovate has built-in support for mise (formerly rtx) and will
   // automatically detect and update tools defined in .mise.toml files.
-  // No specific configuration is needed for mise unless you want to override
-  // default behavior for specific tools.
+  // The GitHub Actions manager is enabled by default if workflow files are present.
+  // No specific configuration is needed for mise or enabling GitHub Actions manager
+  // unless you want to override default behavior.
 }
