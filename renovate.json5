@@ -1,0 +1,37 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended", // Base configuration with sensible defaults
+    ":docker",            // Enable Dockerfile updates (base images, etc.)
+    ":githubActions"      // Enable GitHub Actions workflow updates
+  ],
+  // Pin digests for Docker images to ensure builds are reproducible and secure.
+  // For example, ubuntu:22.04 will become ubuntu:22.04@sha256:abcdef...
+  "pinDigests": true,
+  "packageRules": [
+    // Group all @types/* packages (TypeScript type definitions) into a single PR.
+    {
+      "matchPackagePatterns": ["^@types/"],
+      "groupName": "TypeScript type definitions (@types)"
+    },
+    // Group ESLint and related packages into a single PR.
+    {
+      "matchPackagePatterns": [
+        "eslint",
+        "^eslint-plugin-",
+        "^@typescript-eslint/",
+        "eslint-config-.*"
+      ],
+      "groupName": "ESLint and related packages"
+    }
+    // Add more package rules here if needed, for example:
+    // {
+    //   "matchPackagePatterns": ["^commitlint"],
+    //   "groupName": "Commitlint packages"
+    // },
+  ]
+  // Renovate has built-in support for mise (formerly rtx) and will
+  // automatically detect and update tools defined in .mise.toml files.
+  // No specific configuration is needed for mise unless you want to override
+  // default behavior for specific tools.
+}
