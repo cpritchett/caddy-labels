@@ -12,7 +12,6 @@
   Caddy with Docker Label Support & Cloudflare
 
   <!-- Repo badges -->
-  [![Version](https://img.shields.io/github/v/tag/cpritchett/caddy-labels?style=for-the-badge&label=Version)](https://github.com/cpritchett/caddy-labels/tags)
   [![Pull Requests](https://img.shields.io/github/issues-pr/cpritchett/caddy-labels?style=for-the-badge)](https://github.com/cpritchett/caddy-labels/pulls)
   [![Issues](https://img.shields.io/github/issues/cpritchett/caddy-labels?style=for-the-badge)](https://github.com/cpritchett/caddy-labels/issues)
 
@@ -20,7 +19,7 @@
 
 ## Table of Contents
 
-- [ztimson/caddy-labels](#top)
+- [cpritchett/caddy-labels](#top)
   - [About](#about)
     - [Built With](#built-with)
   - [Setup](#setup)
