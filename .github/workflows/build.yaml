@@ -35,11 +35,13 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     permissions:
-      contents: read
+      contents: write # Changed from read to write for release creation
       packages: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Required for git describe to get tags
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -65,20 +67,38 @@ jobs:
       - name: Extract Caddy version
         id: caddy-version
         run: |
-          VERSION=$(grep "ARG CADDY_VERSION" Dockerfile | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+\(-[A-Za-z0-9.-]\+\)\?\(\+[A-Za-z0-9.-]\+\)\?')
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          CADDY_VERSION_RAW=$(grep "ARG CADDY_VERSION" Dockerfile | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+\(-[A-Za-z0-9.-]\+\)\?\(\+[A-Za-z0-9.-]\+\)\?')
+          echo "caddy_version_raw=$CADDY_VERSION_RAW" >> $GITHUB_OUTPUT
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          echo "short_sha=$SHORT_SHA" >> $GITHUB_OUTPUT
+          VERSION_TAG="${CADDY_VERSION_RAW}-${SHORT_SHA}"
+          echo "version_tag=$VERSION_TAG" >> $GITHUB_OUTPUT
 
       - name: Build and push Docker image
+        id: build-and-push
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
           tags: |
             ${{ steps.meta.outputs.tags }}
-            ghcr.io/${{ github.repository }}:${{ steps.caddy-version.outputs.version }}
+            ghcr.io/${{ github.repository }}:${{ steps.caddy-version.outputs.version_tag }}
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64,linux/arm64
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.caddy-version.outputs.version_tag }}
+          release_name: Release ${{ steps.caddy-version.outputs.version_tag }}
+          body: |
+            Image released with Caddy version ${{ steps.caddy-version.outputs.caddy_version_raw }} and commit ${{ steps.caddy-version.outputs.short_sha }}.
+            Image tag: ghcr.io/${{ github.repository }}:${{ steps.caddy-version.outputs.version_tag }}
+          draft: false
+          prerelease: false
 
