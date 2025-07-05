@@ -25,6 +25,7 @@
   - [Setup](#setup)
     - [Production](#production)
     - [Development](#development)
+  - [Versioning](#versioning)
   - [License](#license)
 
 ## About
@@ -172,6 +173,28 @@ npm run lint:fix      # Auto-fix Markdown issues
 
 - Pre-commit: Runs all linters before allowing commits
 - Commit-msg: Validates commit message format
+
+## Versioning
+
+This project uses a versioning scheme based on the upstream Caddy version and the Git commit SHA.
+
+- **Image Tags:** Docker images are tagged in the format `{CADDY_VERSION}-{SHORT_SHA}`.
+  For example, `2.10.0-a1b2c3d`.
+  - `{CADDY_VERSION}`: The version of Caddy used in the image (e.g., `2.10.0`).
+  - `{SHORT_SHA}`: The short Git commit SHA representing the state of this repository when the image
+    was built (e.g., `a1b2c3d`).
+- **GitHub Releases:** For every image pushed to GHCR with this tag format, a corresponding GitHub
+  Release is created with the same tag. This allows for easy tracking of changes and provides a
+  clear link between an image and its source code.
+- **`latest` Tag:** The `latest` tag will always point to the most recent image built from the
+  `main` branch.
+
+This approach ensures that:
+
+- Each image build from `main` is uniquely identifiable.
+- Users can easily find the exact source code that corresponds to a specific image version via the
+  GitHub Release.
+- It's clear which version of Caddy is included.
 
 ## License
 
