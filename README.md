@@ -33,7 +33,7 @@
 Caddy with docker label support & Cloudflare
 
 - [Cloudflare](https://github.com/caddy-dns/cloudflare)
-- [caddy-docker-proxy](github.com/lucaslorentz/caddy-docker-proxy)
+- [caddy-docker-proxy](https://github.com/lucaslorentz/caddy-docker-proxy)
 
 This image will inspect container labels & translate them into a caddy config
 like so:
@@ -72,7 +72,7 @@ caddy.handle: '@local'
 caddy.handle.reverse_proxy: '{{upstreams 3000}}'
 ```
 
-See [caddy-docker-proxy](github.com/lucaslorentz/caddy-docker-proxy) for more information
+See [caddy-docker-proxy](https://github.com/lucaslorentz/caddy-docker-proxy) for more information
 
 ### Built With
 
