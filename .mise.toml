@@ -7,7 +7,7 @@ pin = true
 node = "22.18.0"
 
 # Hadolint for Dockerfile linting
-hadolint = "2.12.0"
+hadolint = "2.14.0"
 cosign = "2.5.2"
 shellcheck = "0.10.0"
 
