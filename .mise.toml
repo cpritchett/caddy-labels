@@ -4,7 +4,7 @@ pin = true
 
 [tools]
 # Node.js for npm and JavaScript tooling
-node = "22.18.0"
+node = "24.12.0"
 
 # Hadolint for Dockerfile linting
 hadolint = "2.12.0"
