@@ -1,2 +1,6 @@
-echo "� Running lint-staged on staged files..."
-npx lint-staged
+echo "🔍 Running lint-staged on staged files..."
+if command -v bunx >/dev/null 2>&1; then
+  bunx --bun lint-staged
+else
+  npx lint-staged
+fi
