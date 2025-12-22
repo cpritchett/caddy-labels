@@ -6,10 +6,16 @@ on:
   pull_request:
     branches: [ main, develop ]
 
+# Cancel in-progress runs for the same workflow on the same branch/PR
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   lint:
     name: Lint Code
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     
     steps:
       - name: Checkout code
