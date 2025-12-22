@@ -27,7 +27,7 @@ jobs:
           bun-version: 'latest'
 
       - name: Socket Security
-        uses: SocketDev/action@v1
+        uses: SocketDev/action@4337a545deecc20f19a909e52db7a2f6ba292f42 # v1
         with:
           mode: firewall-free
 
