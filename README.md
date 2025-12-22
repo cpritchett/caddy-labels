@@ -194,7 +194,7 @@ Docker images are tagged with multiple formats:
 1. Commits to `main` using conventional commit format trigger Release Please
 2. Release Please creates/updates a release PR with:
    - Automated CHANGELOG updates
-   - Version bumps in `package.json`
+   - Version information in git tags
 3. When the release PR is merged, a GitHub release is created
 4. The release triggers Docker image builds with versioned tags
 
