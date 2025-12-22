@@ -6,38 +6,48 @@ on:
   pull_request:
     branches: [ main, develop ]
 
+# Cancel in-progress runs for the same workflow on the same branch/PR
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   lint:
     name: Lint Code
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2
         with:
-          node-version: '22'
-          cache: 'npm'
+          bun-version: 'latest'
+
+      - name: Socket Security
+        uses: SocketDev/action@v1
+        with:
+          mode: firewall-free
 
       - name: Install dependencies
-        run: npm ci
+        run: sfw bun install
 
       - name: Lint Dockerfile
-        uses: hadolint/hadolint-action@v3.1.0
+        uses: hadolint/hadolint-action@2332a7b74a6de0dda2e2221d575162eba76ba5e5 # v3.3.0
         with:
           dockerfile: Dockerfile
           config: .hadolint.yaml
 
       - name: Lint Markdown
-        run: npm run lint:markdown
+        run: bun run lint:markdown
 
       - name: Lint YAML
-        run: npm run lint:yaml
+        run: bun run lint:yaml
 
       - name: Check commit messages (PR only)
         if: github.event_name == 'pull_request'
         run: |
           git fetch origin main:main
-          npx commitlint --from main --to HEAD
+          bunx --bun commitlint --from main --to HEAD
