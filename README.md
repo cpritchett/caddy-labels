@@ -127,7 +127,7 @@ volumes:
 
 - [Docker](https://docs.docker.com/get-started/get-docker/)
 - [mise](https://mise.jdx.dev/) (recommended) or
-  [Node.js](https://nodejs.org/)
+  [Bun](https://bun.sh/)
 
 #### Build Instructions
 
@@ -147,22 +147,24 @@ mise run setup  # Install all tools and dependencies
 **Setup without mise:**
 
 ```bash
-npm install  # Install Node.js dependencies
+bun install  # Install Bun dependencies
 # Install hadolint manually for your platform
 ```
 
 **Available commands:**
 
 ```bash
-npm run lint          # Run all linters
-npm run lint:docker   # Lint Dockerfile with hadolint
-npm run lint:markdown # Lint Markdown files
-npm run lint:yaml     # Lint YAML files with ESLint
-npm run lint:fix      # Auto-fix Markdown issues
+bun run lint          # Run all linters
+bun run lint:docker   # Lint Dockerfile with hadolint
+bun run lint:markdown # Lint Markdown files
+bun run lint:yaml     # Lint YAML files with ESLint
+bun run lint:fix      # Auto-fix Markdown issues
 ```
 
 **Tools included:**
 
+- **Bun** - Fast JavaScript runtime and package manager
+- **Socket.dev** - Dependency security scanning (GitHub Actions)
 - **Hadolint** - Dockerfile linting and security checks
 - **markdownlint** - Markdown formatting and style
 - **eslint-plugin-yml** - YAML syntax and style via ESLint

@@ -5,7 +5,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "lint": "npm run lint:docker && npm run lint:markdown && npm run lint:yaml",
+    "lint": "bun run lint:docker && bun run lint:markdown && bun run lint:yaml",
     "lint:docker": "mise exec -- hadolint Dockerfile || hadolint Dockerfile",
     "lint:markdown": "markdownlint --config .markdownlint.jsonc *.md",
     "lint:yaml": "eslint --ext .yml,.yaml .github/workflows/",

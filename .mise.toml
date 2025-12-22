@@ -3,8 +3,8 @@
 pin = true
 
 [tools]
-# Node.js for npm and JavaScript tooling
-node = "24.12.0"
+# Bun for fast package management and JavaScript tooling
+bun = "latest"
 
 # Hadolint for Dockerfile linting
 hadolint = "2.12.0"
@@ -14,16 +14,16 @@ shellcheck = "0.10.0"
 [tasks.install-tools]
 description = "Install all linting dependencies"
 run = [
-    "npm install"
+    "bun install"
 ]
 
 [tasks.lint]
 description = "Run all linters"
-run = "npm run lint"
+run = "bun run lint"
 
 [tasks.lint-fix]
 description = "Auto-fix linting issues where possible"
-run = "npm run lint:fix"
+run = "bun run lint:fix"
 
 [tasks.setup]
 description = "Complete setup for development"

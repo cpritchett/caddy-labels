@@ -21,14 +21,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
 
-      - name: Set up Node.js
-        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@4bc047ad259df6fc24a6c9b0f9a0cb08cf17fbe5 # v2
         with:
-          node-version: '22'
-          cache: 'npm'
+          bun-version: 'latest'
 
       - name: Install dependencies
-        run: npm ci
+        run: bun install
+
+      - name: Socket Security Scan
+        uses: socketdev/socket-security-github-action@v3
+        with:
+          type: install
+          issue-report: true
+          fail-on: critical
 
       - name: Lint Dockerfile
         uses: hadolint/hadolint-action@v3.1.0
@@ -37,13 +43,13 @@ jobs:
           config: .hadolint.yaml
 
       - name: Lint Markdown
-        run: npm run lint:markdown
+        run: bun run lint:markdown
 
       - name: Lint YAML
-        run: npm run lint:yaml
+        run: bun run lint:yaml
 
       - name: Check commit messages (PR only)
         if: github.event_name == 'pull_request'
         run: |
           git fetch origin main:main
-          npx commitlint --from main --to HEAD
+          bunx --bun commitlint --from main --to HEAD
