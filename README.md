@@ -176,25 +176,40 @@ npm run lint:fix      # Auto-fix Markdown issues
 
 ## Versioning
 
-This project uses a versioning scheme based on the upstream Caddy version and the Git commit SHA.
+This project uses [Release Please](https://github.com/googleapis/release-please) for automated
+versioning and release management based on
+[Conventional Commits](https://www.conventionalcommits.org/).
 
-- **Image Tags:** Docker images are tagged in the format `{CADDY_VERSION}-{SHORT_SHA}`.
-  For example, `2.10.0-a1b2c3d`.
-  - `{CADDY_VERSION}`: The version of Caddy used in the image (e.g., `2.10.0`).
-  - `{SHORT_SHA}`: The short Git commit SHA representing the state of this repository when the image
-    was built (e.g., `a1b2c3d`).
-- **GitHub Releases:** For every image pushed to GHCR with this tag format, a corresponding GitHub
-  Release is created with the same tag. This allows for easy tracking of changes and provides a
-  clear link between an image and its source code.
-- **`latest` Tag:** The `latest` tag will always point to the most recent image built from the
-  `main` branch.
+### Version Tags
 
-This approach ensures that:
+Docker images are tagged with multiple formats:
 
-- Each image build from `main` is uniquely identifiable.
-- Users can easily find the exact source code that corresponds to a specific image version via the
-  GitHub Release.
-- It's clear which version of Caddy is included.
+- **Semantic Version Tags**: `1.0.0`, `1.0`, `1` (created on releases)
+- **Caddy Version Tag**: `caddy-2.10.0` (always includes the Caddy version)
+- **Latest Tag**: `latest` (always points to the most recent main branch build)
+- **Timestamp Tag**: `YYYYMMDD-HHmmss` (for each main branch build)
+
+### Release Process
+
+1. Commits to `main` using conventional commit format trigger Release Please
+2. Release Please creates/updates a release PR with:
+   - Automated CHANGELOG updates
+   - Version bumps in `package.json`
+3. When the release PR is merged, a GitHub release is created
+4. The release triggers Docker image builds with versioned tags
+
+### Commit Format
+
+Follow the [Conventional Commits](https://www.conventionalcommits.org/) specification:
+
+- `feat:` - New features (bumps minor version)
+- `fix:` - Bug fixes (bumps patch version)
+- `docs:` - Documentation changes
+- `chore:` - Maintenance tasks
+- `ci:` - CI/CD changes
+- Add `!` or `BREAKING CHANGE:` for breaking changes (bumps major version)
+
+Example: `feat: add support for new Caddy plugin`
 
 ## License
 
