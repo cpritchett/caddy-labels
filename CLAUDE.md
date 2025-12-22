@@ -20,10 +20,10 @@ Key features:
 
 ```bash
 # With mise (recommended)
-mise run setup  # Installs tools and npm dependencies
+mise run setup  # Installs tools and bun dependencies
 
 # Without mise
-npm install
+bun install
 ```
 
 ### Building
@@ -39,11 +39,11 @@ docker buildx build --platform linux/amd64,linux/arm64 .
 ### Linting
 
 ```bash
-npm run lint          # Run all linters
-npm run lint:docker   # Lint Dockerfile
-npm run lint:markdown # Lint Markdown files
-npm run lint:yaml     # Lint YAML workflows
-npm run lint:fix      # Auto-fix Markdown issues
+bun run lint          # Run all linters
+bun run lint:docker   # Lint Dockerfile
+bun run lint:markdown # Lint Markdown files
+bun run lint:yaml     # Lint YAML workflows
+bun run lint:fix      # Auto-fix Markdown issues
 ```
 
 ### Version Updates
@@ -85,13 +85,15 @@ labels:
 
 - `Dockerfile`: Main build configuration
 - `package.json`: Development scripts and linting tools
+- `bun.lockb`: Bun lockfile for dependency versions
 - `.github/workflows/build.yaml`: CI/CD pipeline for Docker builds
-- `.github/workflows/lint.yaml`: Code quality checks
-- `.mise.toml`: Tool version management (Node.js, hadolint, etc.)
+- `.github/workflows/lint.yaml`: Code quality checks (includes Socket.dev security scanning)
+- `.mise.toml`: Tool version management (Bun, hadolint, etc.)
 
 ## Important Notes
 
 - This is a Docker image project with no application code
-- All development dependencies are Node.js-based for linting/tooling
+- All development dependencies are Bun-based for fast, secure linting/tooling
+- Socket.dev integration provides free dependency security scanning in CI
 - Commits must follow conventional commit format (enforced by commitlint)
 - Pre-commit hooks run linters automatically via Husky
