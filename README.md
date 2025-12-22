@@ -180,41 +180,53 @@ This project uses [Release Please](https://github.com/googleapis/release-please)
 versioning and release management based on
 [Conventional Commits](https://www.conventionalcommits.org/).
 
-**Version Strategy**: Repository versions track upstream Caddy releases (e.g., v2.10.0 =
-Caddy 2.10.0). CI, documentation, and tooling improvements are included in the changelog for
-the next Caddy-driven release.
+**Versioning Strategy**: This project uses **independent semantic versioning** (e.g., v1.0.0,
+v1.1.0) to track changes to this wrapper repository. The Caddy version in each release is
+clearly identified via the `caddy-X.Y.Z` Docker tag.
 
 ### Version Tags
 
 Docker images are tagged with multiple formats:
 
-- **Semantic Version Tags**: `2.10.0`, `2.10`, `2` (match Caddy version on releases)
-- **Caddy Version Tag**: `caddy-2.10.0` (always includes the Caddy version)
+- **Semantic Version Tags**: `1.0.0`, `1.0`, `1` (track wrapper repository changes)
+- **Caddy Version Tag**: `caddy-2.10.0` (shows the Caddy version included)
 - **Latest Tag**: `latest` (always points to the most recent main branch build)
 - **Timestamp Tag**: `YYYYMMDD-HHmmss` (for each main branch build)
 
 ### Release Process
 
-1. **Caddy Update**: Renovate detects new Caddy versions and creates a PR to update the
-   Dockerfile
-2. **Merge with Conventional Commit**: Use `fix: upgrade to Caddy X.Y.Z` to merge the update
-3. **Release Please Triggers**: Automatically creates/updates a release PR with:
-   - Automated CHANGELOG updates (including CI/docs changes since last release)
-   - Version bump matching the new Caddy version
-4. **Merge Release PR**: Creates a GitHub release and triggers Docker image builds
+1. **For Caddy Updates**: Renovate detects new Caddy versions and creates a PR
+2. **Merge with Conventional Commit**: Use appropriate commit format (e.g., `fix: upgrade to
+   Caddy 2.11.0`)
+3. **For Wrapper Changes**: Make changes with conventional commits (feat:, fix:, docs:, ci:)
+4. **Release Please Triggers**: Automatically creates/updates a release PR with:
+   - Automated CHANGELOG updates (including all changes since last release)
+   - Version bump based on conventional commits
+5. **Merge Release PR**: Creates a GitHub release and triggers Docker image builds
+
+### Versioning Examples
+
+- `v1.0.0` - Initial release (Caddy 2.10.0)
+- `v1.1.0` - Add new plugin support (still Caddy 2.10.0)
+- `v1.2.0` - Upgrade to Caddy 2.11.0
+- `v1.2.1` - Fix configuration bug (still Caddy 2.11.0)
 
 ### Commit Format
 
 Follow the [Conventional Commits](https://www.conventionalcommits.org/) specification:
 
-- `fix: upgrade to Caddy X.Y.Z` - New Caddy version (bumps to match Caddy version)
-- `feat:` - New features (included in next Caddy release changelog)
-- `fix:` - Bug fixes (included in next Caddy release changelog)
+- `feat:` - New features (bumps minor version)
+- `fix:` - Bug fixes or Caddy upgrades (bumps patch version)
 - `docs:` - Documentation changes (included in changelog)
 - `ci:` - CI/CD changes (included in changelog)
 - `chore:` - Maintenance tasks (hidden from changelog)
+- Add `!` or `BREAKING CHANGE:` for breaking changes (bumps major version)
 
-Example: `fix: upgrade to Caddy 2.11.0 for security patches`
+Examples:
+
+- `fix: upgrade to Caddy 2.11.0 for security patches`
+- `feat: add support for Tailscale plugin`
+- `ci: improve Docker build caching`
 
 ## License
 
