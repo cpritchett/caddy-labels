@@ -26,15 +26,13 @@ jobs:
         with:
           bun-version: 'latest'
 
-      - name: Install dependencies
-        run: bun install
-
-      - name: Socket Security Scan
-        uses: socketdev/socket-security-github-action@v3
+      - name: Socket Security
+        uses: SocketDev/action@v1
         with:
-          type: install
-          issue-report: true
-          fail-on: critical
+          mode: firewall-free
+
+      - name: Install dependencies
+        run: sfw bun install
 
       - name: Lint Dockerfile
         uses: hadolint/hadolint-action@v3.1.0
