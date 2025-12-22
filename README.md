@@ -176,25 +176,57 @@ npm run lint:fix      # Auto-fix Markdown issues
 
 ## Versioning
 
-This project uses a versioning scheme based on the upstream Caddy version and the Git commit SHA.
+This project uses [Release Please](https://github.com/googleapis/release-please) for automated
+versioning and release management based on
+[Conventional Commits](https://www.conventionalcommits.org/).
 
-- **Image Tags:** Docker images are tagged in the format `{CADDY_VERSION}-{SHORT_SHA}`.
-  For example, `2.10.0-a1b2c3d`.
-  - `{CADDY_VERSION}`: The version of Caddy used in the image (e.g., `2.10.0`).
-  - `{SHORT_SHA}`: The short Git commit SHA representing the state of this repository when the image
-    was built (e.g., `a1b2c3d`).
-- **GitHub Releases:** For every image pushed to GHCR with this tag format, a corresponding GitHub
-  Release is created with the same tag. This allows for easy tracking of changes and provides a
-  clear link between an image and its source code.
-- **`latest` Tag:** The `latest` tag will always point to the most recent image built from the
-  `main` branch.
+**Versioning Strategy**: This project uses **independent semantic versioning** (e.g., v1.0.0,
+v1.1.0) to track changes to this wrapper repository. The Caddy version in each release is
+clearly identified via the `caddy-X.Y.Z` Docker tag.
 
-This approach ensures that:
+### Version Tags
 
-- Each image build from `main` is uniquely identifiable.
-- Users can easily find the exact source code that corresponds to a specific image version via the
-  GitHub Release.
-- It's clear which version of Caddy is included.
+Docker images are tagged with multiple formats:
+
+- **Semantic Version Tags**: `1.0.0`, `1.0`, `1` (track wrapper repository changes)
+- **Caddy Version Tag**: `caddy-2.10.0` (shows the Caddy version included)
+- **Latest Tag**: `latest` (always points to the most recent main branch build)
+- **Timestamp Tag**: `YYYYMMDD-HHmmss` (for each main branch build)
+
+### Release Process
+
+1. **For Caddy Updates**: Renovate detects new Caddy versions and creates a PR
+2. **Merge with Conventional Commit**: Use appropriate commit format (e.g., `fix: upgrade to
+   Caddy 2.11.0`)
+3. **For Wrapper Changes**: Make changes with conventional commits (feat:, fix:, docs:, ci:)
+4. **Release Please Triggers**: Automatically creates/updates a release PR with:
+   - Automated CHANGELOG updates (including all changes since last release)
+   - Version bump based on conventional commits
+5. **Merge Release PR**: Creates a GitHub release and triggers Docker image builds
+
+### Versioning Examples
+
+- `v1.0.0` - Initial release (Caddy 2.10.0)
+- `v1.1.0` - Add new plugin support (still Caddy 2.10.0)
+- `v1.2.0` - Upgrade to Caddy 2.11.0
+- `v1.2.1` - Fix configuration bug (still Caddy 2.11.0)
+
+### Commit Format
+
+Follow the [Conventional Commits](https://www.conventionalcommits.org/) specification:
+
+- `feat:` - New features (bumps minor version)
+- `fix:` - Bug fixes or Caddy upgrades (bumps patch version)
+- `docs:` - Documentation changes (included in changelog)
+- `ci:` - CI/CD changes (included in changelog)
+- `chore:` - Maintenance tasks (hidden from changelog)
+- Add `!` or `BREAKING CHANGE:` for breaking changes (bumps major version)
+
+Examples:
+
+- `fix: upgrade to Caddy 2.11.0 for security patches`
+- `feat: add support for Tailscale plugin`
+- `ci: improve Docker build caching`
 
 ## License
 
