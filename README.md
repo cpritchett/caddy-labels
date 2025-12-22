@@ -180,36 +180,41 @@ This project uses [Release Please](https://github.com/googleapis/release-please)
 versioning and release management based on
 [Conventional Commits](https://www.conventionalcommits.org/).
 
+**Version Strategy**: Repository versions track upstream Caddy releases (e.g., v2.10.0 =
+Caddy 2.10.0). CI, documentation, and tooling improvements are included in the changelog for
+the next Caddy-driven release.
+
 ### Version Tags
 
 Docker images are tagged with multiple formats:
 
-- **Semantic Version Tags**: `1.0.0`, `1.0`, `1` (created on releases)
+- **Semantic Version Tags**: `2.10.0`, `2.10`, `2` (match Caddy version on releases)
 - **Caddy Version Tag**: `caddy-2.10.0` (always includes the Caddy version)
 - **Latest Tag**: `latest` (always points to the most recent main branch build)
 - **Timestamp Tag**: `YYYYMMDD-HHmmss` (for each main branch build)
 
 ### Release Process
 
-1. Commits to `main` using conventional commit format trigger Release Please
-2. Release Please creates/updates a release PR with:
-   - Automated CHANGELOG updates
-   - Version information in git tags
-3. When the release PR is merged, a GitHub release is created
-4. The release triggers Docker image builds with versioned tags
+1. **Caddy Update**: Renovate detects new Caddy versions and creates a PR to update the
+   Dockerfile
+2. **Merge with Conventional Commit**: Use `fix: upgrade to Caddy X.Y.Z` to merge the update
+3. **Release Please Triggers**: Automatically creates/updates a release PR with:
+   - Automated CHANGELOG updates (including CI/docs changes since last release)
+   - Version bump matching the new Caddy version
+4. **Merge Release PR**: Creates a GitHub release and triggers Docker image builds
 
 ### Commit Format
 
 Follow the [Conventional Commits](https://www.conventionalcommits.org/) specification:
 
-- `feat:` - New features (bumps minor version)
-- `fix:` - Bug fixes (bumps patch version)
-- `docs:` - Documentation changes
-- `chore:` - Maintenance tasks
-- `ci:` - CI/CD changes
-- Add `!` or `BREAKING CHANGE:` for breaking changes (bumps major version)
+- `fix: upgrade to Caddy X.Y.Z` - New Caddy version (bumps to match Caddy version)
+- `feat:` - New features (included in next Caddy release changelog)
+- `fix:` - Bug fixes (included in next Caddy release changelog)
+- `docs:` - Documentation changes (included in changelog)
+- `ci:` - CI/CD changes (included in changelog)
+- `chore:` - Maintenance tasks (hidden from changelog)
 
-Example: `feat: add support for new Caddy plugin`
+Example: `fix: upgrade to Caddy 2.11.0 for security patches`
 
 ## License
 

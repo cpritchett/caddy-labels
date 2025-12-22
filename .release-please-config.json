@@ -54,12 +54,12 @@
         {
           "type": "build",
           "section": "Build System",
-          "hidden": true
+          "hidden": false
         },
         {
           "type": "ci",
           "section": "Continuous Integration",
-          "hidden": true
+          "hidden": false
         }
       ]
     }
