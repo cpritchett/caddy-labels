@@ -1,21 +1,30 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended", // Base configuration with sensible defaults
-    ":docker",            // Enable Dockerfile updates (base images, etc.) - This preset enables the Docker manager and certain behaviors.
-    "helpers:pinGitHubActionDigests" // Pin GitHub Actions to their commit SHAs for security and reproducibility.
+    // Best practices preset includes:
+    // - config:recommended (base sensible defaults)
+    // - docker:pinDigests (pin Docker image digests)
+    // - helpers:pinGitHubActionDigests (pin GitHub Action SHAs)
+    // - :pinDevDependencies (reproducible dev environments)
+    // - :configMigration (auto-update Renovate config)
+    // - abandonments:recommended (detect abandoned packages)
+    // - security:minimumReleaseAgeNpm (avoid brand-new releases)
+    "config:best-practices",
+    // Explicitly enable semantic commits for conventional commit format
+    ":semanticCommits",
+    // Use 'chore' prefix for all dependency updates to keep them out of release notes
+    ":semanticCommitTypeAll(chore)"
   ],
-  // Pin digests for Docker images to ensure builds are reproducible and secure.
-  // For example, ubuntu:22.04 will become ubuntu:22.04@sha256:abcdef...
-  // This is a global setting. The :docker preset above also includes docker:pinDigests.
-  "pinDigests": true,
+  // Limit concurrent PRs to reduce noise and CI load
+  "prConcurrentLimit": 10,
+  // Schedule updates to run during off-hours (UTC)
+  "schedule": [
+    "after 10pm every weekday",
+    "before 5am every weekday",
+    "every weekend"
+  ],
   "packageRules": [
-    // Group all @types/* packages (TypeScript type definitions) into a single PR.
-    {
-      "matchPackagePatterns": ["^@types/"],
-      "groupName": "TypeScript type definitions (@types)"
-    },
-    // Group ESLint and related packages into a single PR.
+    // Group ESLint and related packages into a single PR
     {
       "matchPackagePatterns": [
         "eslint",
@@ -24,16 +33,39 @@
         "eslint-config-.*"
       ],
       "groupName": "ESLint and related packages"
+    },
+    // Group commitlint packages together
+    {
+      "matchPackagePatterns": [
+        "^@commitlint/",
+        "^commitlint"
+      ],
+      "groupName": "Commitlint packages"
+    },
+    // Automerge devDependencies with passing tests
+    {
+      "matchDepTypes": ["devDependencies"],
+      "automerge": true,
+      "automergeType": "pr",
+      "automergeStrategy": "squash"
+    },
+    // Automerge GitHub Actions with pinned digests
+    {
+      "matchManagers": ["github-actions"],
+      "automerge": true,
+      "automergeType": "pr",
+      "automergeStrategy": "squash"
+    },
+    // Automerge mise tool updates for non-breaking versions
+    {
+      "matchManagers": ["mise"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true,
+      "automergeType": "pr",
+      "automergeStrategy": "squash"
     }
-    // Add more package rules here if needed, for example:
-    // {
-    //   "matchPackagePatterns": ["^commitlint"],
-    //   "groupName": "Commitlint packages"
-    // },
   ]
-  // Renovate has built-in support for mise (formerly rtx) and will
-  // automatically detect and update tools defined in .mise.toml files.
+  // Renovate has built-in support for mise and will automatically detect
+  // and update tools defined in .mise.toml files.
   // The GitHub Actions manager is enabled by default if workflow files are present.
-  // No specific configuration is needed for mise or enabling GitHub Actions manager
-  // unless you want to override default behavior.
 }
