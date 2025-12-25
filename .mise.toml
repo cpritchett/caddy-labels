@@ -9,7 +9,7 @@ bun = "latest"
 # Hadolint for Dockerfile linting
 hadolint = "2.14.0"
 cosign = "2.5.2"
-shellcheck = "0.10.0"
+shellcheck = "0.11.0"
 
 [tasks.install-tools]
 description = "Install all linting dependencies"
