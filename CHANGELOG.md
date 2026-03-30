@@ -2,7 +2,6 @@
 
 ## [1.1.0](https://github.com/cpritchett/caddy-labels/compare/v1.0.0...v1.1.0) (2025-12-22)
 
-
 ### Features
 
 * add claude.md ([e42b3a1](https://github.com/cpritchett/caddy-labels/commit/e42b3a1276528b72b272111ec30103d362b47bb6))
@@ -14,7 +13,6 @@
 * Implement image versioning and GitHub Releases ([5607102](https://github.com/cpritchett/caddy-labels/commit/56071025a6330f6b72bb89110524e742cbb3afd9))
 * Implement image versioning and GitHub Releases ([bebaa59](https://github.com/cpritchett/caddy-labels/commit/bebaa5965a3f5e285adef0c10d094b220ea0dca8))
 * Implement image versioning and GitHub Releases ([210e947](https://github.com/cpritchett/caddy-labels/commit/210e9477da601c5db171df270ec8dc6772ff0474))
-
 
 ### Bug Fixes
 
@@ -34,12 +32,10 @@
 * updated distignore ([5d6b586](https://github.com/cpritchett/caddy-labels/commit/5d6b5863285260522421e2b6ff53da2aaa654214))
 * upgrade to Caddy 2.10.0 for Go 1.24 compatibility ([cacc19a](https://github.com/cpritchett/caddy-labels/commit/cacc19abcb8c77c09bf43893ef8c3827a55225ff))
 
-
 ### Documentation
 
 * remove all Route53 references ([21c79cd](https://github.com/cpritchett/caddy-labels/commit/21c79cde468fd7af6551043cde9532877c08407c))
 * update repository references to cpritchett ([7a819da](https://github.com/cpritchett/caddy-labels/commit/7a819da33829493c174e56fe8c8129969467fb42))
-
 
 ### Code Refactoring
 
@@ -48,7 +44,6 @@
 * simplify release-please config for Docker versioning ([b922d90](https://github.com/cpritchett/caddy-labels/commit/b922d903bb5ce584cc5c7c2d776be7cdf714f237))
 * simplify release-please workflow by removing unused outputs ([af3a4a7](https://github.com/cpritchett/caddy-labels/commit/af3a4a75e9bd8cef0968353ed597305323baf925))
 * use independent versioning with visible CI/docs changes ([2aa46a8](https://github.com/cpritchett/caddy-labels/commit/2aa46a8ec0b7d5b6ddf16b57fbd33e8f827acbe8))
-
 
 ### Continuous Integration
 
