@@ -33,7 +33,7 @@
     "eslint-plugin-yml": "1.19.1",
     "husky": "^9.0.11",
     "lint-staged": "^16.4.0",
-    "markdownlint-cli": "^0.47.0"
+    "markdownlint-cli": "^0.48.0"
   },
   "repository": {
     "type": "git",
