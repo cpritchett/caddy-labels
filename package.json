@@ -27,8 +27,8 @@
     ]
   },
   "devDependencies": {
-    "@commitlint/cli": "21.0.1",
-    "@commitlint/config-conventional": "21.0.1",
+    "@commitlint/cli": "21.2.2",
+    "@commitlint/config-conventional": "21.2.2",
     "eslint": "10.9.1",
     "eslint-plugin-yml": "3.8.1",
     "husky": "^9.0.11",
